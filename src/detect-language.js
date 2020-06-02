@@ -1,5 +1,15 @@
+
 const LanguageTranslatorV3 = require('ibm-watson/language-translator/v3');
 const { IamAuthenticator } = require('ibm-watson/auth');
+const languageTranslator = new LanguageTranslatorV3({
+  version: '2020-04-14',
+  authenticator: new IamAuthenticator({
+    apikey: 'o7kUPlyPfnbuvIgP3XRmEd7hPfky82mPOBbDX-tojZRZ',
+  }),
+  url: 'https://api.eu-de.language-translator.watson.cloud.ibm.com/instances/b19c2b07-f381-42b8-a605-13131815cadd',
+});
+
+
 
 
 /**
@@ -46,6 +56,22 @@ function main(params) {
 
       // in case of errors during the call resolve with an error message according to the pattern 
       // found in the catch clause below
+	  
+	const identifyParams = {
+	  text: 'Language translator translates text from one language to another'
+	};
+	var maxConfidence = 0; 
+
+	languageTranslator.identify(identifyParams)
+	.then(identifiedLanguages => {
+    console.log(JSON.stringify(identifiedLanguages, null, 2));
+	})
+	.catch(err => {
+    console.log('error:', err);
+	});
+
+
+
 
       resolve({
         statusCode: 200,
