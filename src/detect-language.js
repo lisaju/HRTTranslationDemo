@@ -68,7 +68,7 @@ function main(params) {
 	console.log("Hello");
 	})
 	.catch(err => {
-    console.log('error:', err);
+    console.info('error:', err);
 	});
 
 
