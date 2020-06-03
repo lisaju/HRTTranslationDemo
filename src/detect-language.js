@@ -64,7 +64,7 @@ function main(params) {
 
 	languageTranslator.identify(identifyParams)
 	.then(identifiedLanguages => {
-    console.log(JSON.stringify(identifiedLanguages, null, 2));
+    //console.log(JSON.stringify(identifiedLanguages, null, 2));
 	console.log("Hello");
 	})
 	.catch(err => {
