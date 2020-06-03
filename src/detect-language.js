@@ -60,12 +60,20 @@ function main(params) {
 	const identifyParams = {
 	  text: 'Language translator translates text from one language to another'
 	};
-	//var maxConfidence = 0; 
+	var maxConfidence = 0; 
+	var bestLanguage = ""; 
 
 	languageTranslator.identify(identifyParams)
 	.then(identifiedLanguages => {
-    //console.log(JSON.stringify(identifiedLanguages, null, 2));
-	console.log("Hello");
+    console.log(JSON.stringify(identifiedLanguages, null, 2));
+	for(const [key,value] of JSON.stringify(identifiedLanguages, null, 2)){
+		if(value >maxConfidence){
+		maxConfidence = value; 
+		bestLanguage = key; 
+		}
+	}
+	
+
 	})
 	.catch(err => {
     console.info('error:', err);
@@ -78,8 +86,8 @@ function main(params) {
         statusCode: 200,
         body: {
           text: params.text, 
-          language: "<Best Language>",
-          confidence: 0.5,
+          language: bestLanguage,
+          confidence: maxConfidence,
         },
         headers: { 'Content-Type': 'application/json' }
       });
