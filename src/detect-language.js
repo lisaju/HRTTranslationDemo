@@ -1,3 +1,8 @@
+// Elisaveta Just (763920, Elisaveta.Just@Student.Reutlingen-University.DE)
+// and
+// Markus Oster (764614, markus.oster@student.reutlingen-university.de)
+
+//identification of a ibm translator object, with the fitting version number, apikey and url from the ibm cloud
 const LanguageTranslatorV3 = require('ibm-watson/language-translator/v3');
 const { IamAuthenticator } = require('ibm-watson/auth');
 const languageTranslator = new LanguageTranslatorV3({
@@ -16,6 +21,7 @@ const languageTranslator = new LanguageTranslatorV3({
  * @param {*} errorMessage
  * @param {*} defaultLanguage
  */
+ //if an error occured, the language should be set to the default language or english, and an error message is set (defined in the catch blocks below)
 function getTheErrorResponse(errorMessage, defaultLanguage) {
   return {
     statusCode: 200,
@@ -40,6 +46,7 @@ function main(params) {
   /*
    * The default language to choose in case of an error
    */
+   //the efault language is set to english
   const defaultLanguage = 'en';
 
   return new Promise(function (resolve, reject) {
@@ -58,30 +65,41 @@ function main(params) {
 
           // test for text field in params
           if (!params.hasOwnProperty('text')){throw 'no text property in JSON';}
+		  //test if parameter is a strig
           if (typeof params.text !== "string"){throw 'text field contains no text';}
+		  //test if string is n ot empty
           if (0 === params.text.length){throw 'text field is empty';}
+		  //test if the sring field is null or undifined
           if (!params.text ){throw 'text field is null or undefined';}
+		  //test if the text contains only whitespaces
           if (!params.text.trim()){throw 'text field contains only whitespace';}
 
 
           // Change these to switch between test-data and called values:
         	const identifyParams = {
         	  //text: 'Language translator translates text from one language to another'
-            text: params.text
+            //the text is given by the user (-> parameters)
+			text: params.text
         	};
         	var maxConfidence = 0;
         	var bestLanguage = "";
           var targetLanguage = "de";
+		  //check if the target language is given by the user (-> parameters) otherwise it stays german
           if (params.hasOwnProperty('target')){targetLanguage = params.target;}
           if (params.hasOwnProperty('targetLanguage')){targetLanguage = params.targetLanguage;}
-
+			
+			//the language translaotr is called with the given parameters, it saves the detected languages and their confidence in "identifiedLanguages"
+			//identifiedLanguages is an object containg the key 'languages', which has an array as a value, that array contains different objects for each detected language
+			//for each of these objects there are key value pairs for the language and the confidence with which it was detected
           languageTranslator.identify(identifyParams)
 
           .then(identifiedLanguages => {
               console.log("Translating: ", identifyParams.text);
-              //console.log(JSON.stringify(identifiedLanguages, null, 2));
+              //console.log(JSON.stringify(identifiedLanguages, null, 2
+			  //if there were languages detected
               if (identifiedLanguages.result.languages !== null && Symbol.iterator in Object(identifiedLanguages.result.languages)){
-                  for (var language of identifiedLanguages.result.languages) {
+				//parse through identifiedLanguages to find the language with the heighest confidence and set it as the best language
+				 for (var language of identifiedLanguages.result.languages) {
                 		  if(language.confidence > maxConfidence){
                     		  maxConfidence = language.confidence;
                     		  bestLanguage = language.language;
@@ -89,12 +107,12 @@ function main(params) {
                       //console.log("Got language ", language.language, " with confidence ", language.confidence);
                 	}
               }
-
+			//if there were no errors, resolve
               resolve({
                   statusCode: 200,
                   body: {
+					  //the best language and the confidence are resolved (and also the parameters text and targetLanguage)
                       text: identifyParams.text,
-                      msg: "markus test",
                       language: bestLanguage,
                       targetLanguage: targetLanguage,
                       confidence: maxConfidence,
