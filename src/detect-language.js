@@ -13,9 +13,9 @@ const languageTranslator = new LanguageTranslatorV3({
 
 
 /**
- * Helper 
- * @param {*} errorMessage 
- * @param {*} defaultLanguage 
+ * Helper
+ * @param {*} errorMessage
+ * @param {*} defaultLanguage
  */
 function getTheErrorResponse(errorMessage, defaultLanguage) {
   return {
@@ -45,57 +45,58 @@ function main(params) {
 
   return new Promise(function (resolve, reject) {
 
-    try {
-      
-      // *******TODO**********
-      // - Call the language identification API of the translation service
-      // see: https://cloud.ibm.com/apidocs/language-translator?code=node#identify-language
-      // - if successful, resolve exactly like shown below with the
-      // language that is most probable the best one in the "language" property
-      // and the confidence it got detected in the "confidence" property
+      try {
 
-      // in case of errors during the call resolve with an error message according to the pattern 
-      // found in the catch clause below
-	  
-	const identifyParams = {
-	  text: 'Language translator translates text from one language to another'
-	};
-	var maxConfidence = 0; 
-	var bestLanguage = ""; 
+          // *******TODO**********
+          // - Call the language identification API of the translation service
+          // see: https://cloud.ibm.com/apidocs/language-translator?code=node#identify-language
+          // - if successful, resolve exactly like shown below with the
+          // language that is most probable the best one in the "language" property
+          // and the confidence it got detected in the "confidence" property
 
-	languageTranslator.identify(identifyParams)
-	.then(identifiedLanguages => {
-    console.log(JSON.stringify(identifiedLanguages, null, 2));
-	for(const [key,value] of JSON.stringify(identifiedLanguages, null, 2)){
-		if(value >maxConfidence){
-		maxConfidence = value; 
-		bestLanguage = key; 
-		}
-	}
-	
+          // in case of errors during the call resolve with an error message according to the pattern
+          // found in the catch clause below
 
-	})
-	.catch(err => {
-    console.info('error:', err);
-	});
+          // Change these to switch between test-data and called values:
+        	const identifyParams = {
+        	  text: 'Language translator translates text from one language to another'
+            //text: params.text
+        	};
+        	var maxConfidence = 0;
+        	var bestLanguage = "";
 
+          languageTranslator.identify(identifyParams)
 
+          .then(identifiedLanguages => {
+              console.log("Translating: ", identifyParams.text);
+              //console.log(JSON.stringify(identifiedLanguages, null, 2));
+            	//for(const [key,value] of JSON.stringify(identifiedLanguages, null, 2)){
+              if (identifiedLanguages.result.languages !== null && Symbol.iterator in Object(identifiedLanguages.result.languages)){
+                  for (var language of identifiedLanguages.result.languages) {
+                		  if(language.confidence > maxConfidence){
+                    		  maxConfidence = language.confidence;
+                    		  bestLanguage = language.language;
+                		  }
+                      console.log("Got language ", language.language, " with confidence ", language.confidence);
+                	}
+              }
 
-
-      resolve({
-        statusCode: 200,
-        body: {
-          text: params.text, 
-          language: bestLanguage,
-          confidence: maxConfidence,
-        },
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-
-    } catch (err) {
-      console.error('Error while initializing the AI service', err);
-      resolve(getTheErrorResponse('Error while communicating with the language service', defaultLanguage));
-    }
+              resolve({
+                  statusCode: 200,
+                  body: {
+                      text: identifyParams.text,
+                      language: bestLanguage,
+                      confidence: maxConfidence,
+                  },
+                  headers: { 'Content-Type': 'application/json' }
+              });
+    	   	})
+        	.catch(err => {
+              console.info('error:', err);
+        	});
+      } catch (err) {
+          console.error('Error while initializing the AI service', err);
+          resolve(getTheErrorResponse('Error while communicating with the language service', defaultLanguage));
+      }
   });
 }
