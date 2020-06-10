@@ -71,6 +71,8 @@ function main(params) {
         	};
         	var maxConfidence = 0;
         	var bestLanguage = "";
+          var targetLanguage = "de";
+          if (!params.hasOwnProperty('targetLanguage')){targetLanguage = params.targetLanguage;}
 
           languageTranslator.identify(identifyParams)
 

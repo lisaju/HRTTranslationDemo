@@ -57,12 +57,14 @@ function main(params) {
       // pick the language with the highest confidence, and send it back
 
       // check if detect-language.js threw an error
-      if (!params.hasOwnProperty('errorMessage')){throw params.errorMsg;}
+      if (params.body.hasOwnProperty('errorMessage')){throw params.body.errorMessage.replace("Error while initializing the AI service: ", "");}
+      if (!params.body.hasOwnProperty('source')){throw "no source language specified";}
+      if (!params.body.hasOwnProperty('target')){throw "no target language specified";}
 
       const translateParams = {
           text: params.body.text,
           source: params.body.language,
-          target: de,
+          target: params.body.language_target,
           //modelId: 'en-de',
       };
 
@@ -90,8 +92,9 @@ function main(params) {
       );
 
     } catch (err) {
-      console.error('Error while initializing the AI service', err);
-      resolve(getTheErrorResponse('Error while communicating with the language service', defaultLanguage));
+        var errorMsg = 'Error while initializing the AI service: ' + err;
+        console.error(errorMsg);
+        resolve(getTheErrorResponse(errorMsg, defaultLanguage));
     }
   });
 }
