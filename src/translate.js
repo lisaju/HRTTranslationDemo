@@ -1,3 +1,8 @@
+// Elisaveta Just (763920, Elisaveta.Just@Student.Reutlingen-University.DE)
+// and
+// Markus Oster (764614, markus.oster@student.reutlingen-university.de)
+
+//identification of a ibm translator object, with the fitting version number, apikey and url from the ibm cloud
 const LanguageTranslatorV3 = require('ibm-watson/language-translator/v3');
 const { IamAuthenticator } = require('ibm-watson/auth');
 const languageTranslator = new LanguageTranslatorV3({
@@ -13,6 +18,7 @@ const languageTranslator = new LanguageTranslatorV3({
  * @param {*} errorMessage
  * @param {*} defaultLanguage
  */
+ //if an error occured, the language should be set to the default language or english, and an error message is set (defined in the catch blocks below)
 function getTheErrorResponse(errorMessage, defaultLanguage) {
   return {
     statusCode: 200,
@@ -61,14 +67,15 @@ function main(params) {
       if (!params.body.hasOwnProperty('text')){throw "no text to translate";}
       if (!params.body.hasOwnProperty('language')){throw "no source language specified";}
       if (!params.body.hasOwnProperty('targetLanguage')){throw "no target language specified";}
-
+		
+		//get the text and the detected language (from detect-language.js)
       const translateParams = {
           text: params.body.text,
           source: params.body.language,
           target: params.body.targetLanguage,
           //modelId: 'en-de',
       };
-
+//the language translaotr is called with the given parameters, it saves the translated language as an object (translationResult)
       languageTranslator.translate(translateParams)
           .then(translationResult => {
               // console.log(JSON.stringify(translationResult, null, 2));
@@ -77,7 +84,8 @@ function main(params) {
               console.log("Translation: ", translatedText.translation);
               // resolve(translationResult);
 
-              resolve({
+              //if no errors occured resolve with the translation and the counted words and characters
+			  resolve({
                 statusCode: 200,
                 body: {
                   translations: translatedText.translation,
