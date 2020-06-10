@@ -56,6 +56,9 @@ function main(params) {
 
       // pick the language with the highest confidence, and send it back
 
+      // check if detect-language.js threw an error
+      if (!params.hasOwnProperty('errorMessage')){throw params.errorMsg;}
+
       const translateParams = {
           text: params.body.text,
           source: params.body.language,
