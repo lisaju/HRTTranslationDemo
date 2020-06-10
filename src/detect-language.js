@@ -56,10 +56,13 @@ function main(params) {
           // in case of errors during the call resolve with an error message according to the pattern
           // found in the catch clause below
 
+          // test for text field in params
+          if (!params.hasOwnProperty('text')){throw 'no text property in JSON';}
+
           // Change these to switch between test-data and called values:
         	const identifyParams = {
-        	  text: 'Language translator translates text from one language to another'
-            //text: params.text
+        	  //text: 'Language translator translates text from one language to another'
+            text: params.text
         	};
         	var maxConfidence = 0;
         	var bestLanguage = "";
@@ -94,8 +97,9 @@ function main(params) {
               console.info('error:', err);
         	});
       } catch (err) {
-          console.error('Error while initializing the AI service', err);
-          resolve(getTheErrorResponse('Error while communicating with the language service', defaultLanguage));
+          var errorMsg = 'Error while initializing the AI service: ' + err;
+          console.error(errorMsg);
+          resolve(getTheErrorResponse(errorMsg, defaultLanguage));
       }
   });
 }

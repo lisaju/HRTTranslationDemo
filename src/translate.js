@@ -59,7 +59,8 @@ function main(params) {
       const translateParams = {
           text: params.body.text,
           source: params.body.language,
-          modelId: 'en-de',
+          target: de,
+          //modelId: 'en-de',
       };
 
       languageTranslator.translate(translateParams)
