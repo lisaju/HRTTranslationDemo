@@ -58,13 +58,14 @@ function main(params) {
 
       // check if detect-language.js threw an error
       if (params.body.hasOwnProperty('errorMessage')){throw params.body.errorMessage.replace("Error while initializing the AI service: ", "");}
-      if (!params.body.hasOwnProperty('source')){throw "no source language specified";}
-      if (!params.body.hasOwnProperty('target')){throw "no target language specified";}
+      if (!params.body.hasOwnProperty('text')){throw "no text to translate";}
+      if (!params.body.hasOwnProperty('language')){throw "no source language specified";}
+      if (!params.body.hasOwnProperty('targetLanguage')){throw "no target language specified";}
 
       const translateParams = {
           text: params.body.text,
           source: params.body.language,
-          target: params.body.language_target,
+          target: params.body.targetLanguage,
           //modelId: 'en-de',
       };
 
