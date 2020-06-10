@@ -83,7 +83,7 @@ function main(params) {
         	};
         	var maxConfidence = 0;
         	var bestLanguage = "";
-          var targetLanguage = "de";
+          var targetLanguage = "en";
 		  //check if the target language is given by the user (-> parameters) otherwise it stays german
           if (params.hasOwnProperty('target')){targetLanguage = params.target;}
           if (params.hasOwnProperty('targetLanguage')){targetLanguage = params.targetLanguage;}
