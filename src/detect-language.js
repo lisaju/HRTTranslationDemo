@@ -58,6 +58,7 @@ function main(params) {
 
           // test for text field in params
           if (!params.hasOwnProperty('text')){throw 'no text property in JSON';}
+          if (typeof params.text !== "string"){throw 'text field contains no text';}
           if (0 === params.text.length){throw 'text field is empty';}
           if (!params.text ){throw 'text field is null or undefined';}
           if (!params.text.trim()){throw 'text field contains only whitespace';}
