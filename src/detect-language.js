@@ -95,6 +95,7 @@ function main(params) {
                   body: {
                       text: identifyParams.text,
                       language: bestLanguage,
+                      targetLanguage: targetLanguage,
                       confidence: maxConfidence,
                   },
                   headers: { 'Content-Type': 'application/json' }
