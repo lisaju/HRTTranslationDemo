@@ -72,21 +72,21 @@ function main(params) {
         	var maxConfidence = 0;
         	var bestLanguage = "";
           var targetLanguage = "de";
-          if (!params.hasOwnProperty('targetLanguage')){targetLanguage = params.targetLanguage;}
+          if (params.hasOwnProperty('target')){targetLanguage = params.target;}
+          if (params.hasOwnProperty('targetLanguage')){targetLanguage = params.targetLanguage;}
 
           languageTranslator.identify(identifyParams)
 
           .then(identifiedLanguages => {
               console.log("Translating: ", identifyParams.text);
               //console.log(JSON.stringify(identifiedLanguages, null, 2));
-            	//for(const [key,value] of JSON.stringify(identifiedLanguages, null, 2)){
               if (identifiedLanguages.result.languages !== null && Symbol.iterator in Object(identifiedLanguages.result.languages)){
                   for (var language of identifiedLanguages.result.languages) {
                 		  if(language.confidence > maxConfidence){
                     		  maxConfidence = language.confidence;
                     		  bestLanguage = language.language;
                 		  }
-                      console.log("Got language ", language.language, " with confidence ", language.confidence);
+                      //console.log("Got language ", language.language, " with confidence ", language.confidence);
                 	}
               }
 
@@ -94,6 +94,7 @@ function main(params) {
                   statusCode: 200,
                   body: {
                       text: identifyParams.text,
+                      msg: "markus test",
                       language: bestLanguage,
                       targetLanguage: targetLanguage,
                       confidence: maxConfidence,
